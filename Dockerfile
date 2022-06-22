@@ -18,16 +18,19 @@ COPY dist /srv/app/dist
 
 FROM node:14-alpine
 EXPOSE 3000
-WORKDIR /srv/app/
+
+USER root
+
+ENV USER=node
+ENV WORKDIR="/home/$USER"
+
+WORKDIR $WORKDIR/srv/app/
 
 # Copy the source from the build stage to the second stage
 
-COPY --from=build /srv/app/ /srv/app/
+COPY --chown=node --from=build /srv/app/ $WORKDIR/srv/app/
 
-# Run healthcheck against MongoDB, server and API.
-# Wait a bit before start to ensure the `yarn build` is done.
-
-HEALTHCHECK --interval=1m --timeout=45s --start-period=45s CMD [ "/srv/app/src/healthcheck.js" ]
+USER $USER
 
 # Start Ackee
 
