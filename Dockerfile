@@ -23,15 +23,19 @@ USER root
 
 ENV USER=node
 ENV WORKDIR="/home/$USER"
+ENV APP_DIR="/home/$USER/srv/app"
 
-WORKDIR $WORKDIR/srv/app/
+WORKDIR $APP_DIR
 
 # Copy the source from the build stage to the second stage
 
-COPY --chown=node --from=build /srv/app/ $WORKDIR/srv/app/
+COPY --chown=node --from=build /srv/app/ "$APP_DIR/"
+COPY --chown=node /entrypoint $APP_DIR/entrypoint
+
+RUN chmod 777 $APP_DIR/entrypoint
 
 USER $USER
 
 # Start Ackee
 
-CMD yarn start
+ENTRYPOINT "$APP_DIR/entrypoint"
