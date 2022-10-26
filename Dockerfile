@@ -23,7 +23,7 @@ USER root
 
 ENV USER=node
 ENV WORKDIR="/home/$USER"
-ENV APP_DIR="/home/$USER/srv/app"
+ENV APP_DIR="$WORKDIR/srv/app"
 
 WORKDIR $APP_DIR
 
